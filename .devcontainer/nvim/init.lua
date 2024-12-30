@@ -48,9 +48,16 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   spec = {
     {
-      'goropikari/plugin-template.nvim',
+      'goropikari/telescope-hugo.nvim',
       dev = true,
-      opts = {},
+      dependencies = {
+        'nvim-telescope/telescope.nvim',
+        {
+          'goropikari/front-matter.nvim',
+          opts = {},
+          build = 'make setup',
+        },
+      },
     },
   },
   dev = {
