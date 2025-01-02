@@ -7,29 +7,11 @@ local telescope = require('telescope')
 local fm = require('front-matter')
 
 local function list_markdown_files(directory)
-  local markdown_files = {}
+  local files = vim.fs.find(function(name, path)
+    return name:match('.*%.md$')
+  end, { limit = math.huge, type = 'file', path = directory })
 
-  -- 確認: ディレクトリが存在しない場合は終了
-  if not vim.uv.fs_stat(directory) then
-    vim.notify(string.format("Directory '%s' does not exist", directory), vim.log.levels.ERROR)
-    return markdown_files
-  end
-
-  -- 再帰的にファイルを探索
-  local function scan_dir(dir)
-    for name, type in vim.fs.dir(dir) do
-      local path = vim.fs.joinpath(dir, name)
-
-      if type == 'file' and path:match('%.md$') then
-        table.insert(markdown_files, path)
-      elseif type == 'directory' then
-        scan_dir(path) -- サブディレクトリを再帰的に探索
-      end
-    end
-  end
-
-  scan_dir(directory)
-  return markdown_files
+  return files
 end
 
 local function list_article_metadata()
